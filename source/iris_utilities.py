@@ -28,6 +28,11 @@ def load_iris(trainingslice=np.s_[:, :30], verificationslice=np.s_[:, 30:], path
 
         read_indices[type_index] += 1
 
+    # It seems like removing the mean and standard deviation decreases the accuracy of the classifier.
+    # for feature in range(4):
+    #     all_data[:, :, feature] -= np.mean(all_data[:, :, feature])
+    #     all_data[:, :, feature] /= np.std(all_data[:, :, feature])
+
     return all_data[trainingslice], all_data[verificationslice]
 
 
@@ -88,6 +93,13 @@ def train_classifier(ts: np.ndarray, iterations: int = 1000, alpha: float = 0.00
 
 
 def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> np.ndarray:
+    """
+    Simple verification of a classifier, finds the confusion matrix after testing all input.
+    :param w: The weighed classifier matrix
+    :param vs: The verification dataset
+    :param visualize: A bool indicating if the results should be printed nicely
+    :return: The confusion matrix from the verification
+    """
     confusion_matrix = np.zeros((3, 3))
 
     for t, target_class in enumerate(vs):
@@ -111,3 +123,20 @@ def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> 
         print(f"\nThis resulted in an error rate of {100 * error_rate:.1f}%.")
 
     return confusion_matrix
+
+
+def select_features(data: np.ndarray, features: list) -> np.ndarray:
+    """
+    Simple tool to select only a few features from a dataset.
+    This is not effective at all as it allocates more memory. Do not use lightly.
+    :param data: The dataset containing among other the relevant features.
+    :param features: A tuple of integers specifying the indices of the wanted features.
+    :return: A new dataset containing only the wanted features.
+    """
+    newdata = np.zeros((len(data), len(data[0]), len(features)))
+
+    features.sort()
+    for index, feat in enumerate(features):
+        newdata[:, :, index] = data[:, :, feat]
+
+    return newdata

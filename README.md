@@ -5,6 +5,7 @@ Stian Hope and Torstein Nordgård-Hansen
 This repository contains the training data as well as the coded solutions to the end semester project in TTT4275.
 
 ## How to run
-All code is run with python3, install all libraries in requirements.txt with pip.
+All code is written in python3, all libraries in requirements.txt are available with pip.
+All code is to be run from the root folder of the project.
 
-It is impossible to run the programs since no code is written yet.
+To run the iris task, simply run the script: "code/run_iristasks.py".
