@@ -69,7 +69,7 @@ def mse_gradient(w: np.ndarray, ts: np.ndarray) -> np.ndarray:
     return grad
 
 
-def train_classifier(ts: np.ndarray, iterations: int = 1000, alpha: float = 0.0005, progress: bool = True) -> np.ndarray:
+def train_linear_classifier(ts: np.ndarray, iterations: int = 1000, alpha: float = 0.0005, progress: bool = True) -> np.ndarray:
     """
     Trains the classifier W given the training set ts
     :param ts: The training set to be used.
@@ -92,7 +92,7 @@ def train_classifier(ts: np.ndarray, iterations: int = 1000, alpha: float = 0.00
     return w
 
 
-def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> np.ndarray:
+def verify_linear_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> np.ndarray:
     """
     Simple verification of a classifier, finds the confusion matrix after testing all input.
     :param w: The weighed classifier matrix
@@ -130,7 +130,7 @@ def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> 
     return confusion_matrix
 
 
-def select_features(data: np.ndarray, features: list) -> np.ndarray:
+def select_iris_features(data: np.ndarray, features: list) -> np.ndarray:
     """
     Simple tool to select only a few features from a dataset.
     This is not effective at all as it allocates more memory. Do not use lightly.

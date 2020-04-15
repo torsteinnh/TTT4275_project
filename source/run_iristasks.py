@@ -16,13 +16,13 @@ def task1():
     ts, vs = load_iris()
 
     print("Training the classifier on first 30 instances:")
-    w = train_classifier(ts)
+    w = train_linear_classifier(ts)
 
     print("\nVerifying the classifier on first 30 instances:")
-    verify_classifier(w, ts)
+    verify_linear_classifier(w, ts)
 
     print("\nVerifying the classifier on the last 20 instances:")
-    verify_classifier(w, vs)
+    verify_linear_classifier(w, vs)
 
     ###############################################################
     # Task 1 d)
@@ -30,13 +30,13 @@ def task1():
     ts, vs = load_iris(np.s_[:, 20:], np.s_[:, :20])
 
     print("Training the classifier on last 30 instances:")
-    w = train_classifier(ts)
+    w = train_linear_classifier(ts)
 
     print("\nVerifying the classifier on last 30 instances:")
-    verify_classifier(w, ts)
+    verify_linear_classifier(w, ts)
 
     print("\nVerifying the classifier on the first 20 instances:")
-    verify_classifier(w, vs)
+    verify_linear_classifier(w, vs)
 
 
 def task2(path: str = None):
@@ -70,25 +70,25 @@ def task2(path: str = None):
     vs = alldata[:, 30:, :]
 
     print("\n\nRemoving second feature:\n\nTraining:")
-    tts = select_features(ts, [0, 2, 3])
-    tvs = select_features(vs, [0, 2, 3])
-    w = train_classifier(tts)
+    tts = select_iris_features(ts, [0, 2, 3])
+    tvs = select_iris_features(vs, [0, 2, 3])
+    w = train_linear_classifier(tts)
     print("Verifying og verification set")
-    verify_classifier(w, tvs)
+    verify_linear_classifier(w, tvs)
 
     print("\n\nRemoving first and second feature:\n\nTraining:")
-    tts = select_features(ts, [2, 3])
-    tvs = select_features(vs, [2, 3])
-    w = train_classifier(tts)
+    tts = select_iris_features(ts, [2, 3])
+    tvs = select_iris_features(vs, [2, 3])
+    w = train_linear_classifier(tts)
     print("Verifying og verification set")
-    verify_classifier(w, tvs)
+    verify_linear_classifier(w, tvs)
 
     print("\n\nRemoving first, second and third feature:\n\nTraining:")
-    tts = select_features(ts, [3])
-    tvs = select_features(vs, [3])
-    w = train_classifier(tts)
+    tts = select_iris_features(ts, [3])
+    tvs = select_iris_features(vs, [3])
+    w = train_linear_classifier(tts)
     print("Verifying og verification set")
-    verify_classifier(w, tvs)
+    verify_linear_classifier(w, tvs)
 
 
 if __name__ == "__main__":
