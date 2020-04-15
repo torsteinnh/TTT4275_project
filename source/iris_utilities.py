@@ -54,7 +54,7 @@ def mse_gradient(w: np.ndarray, ts: np.ndarray) -> np.ndarray:
     :param ts: The training set to find the MSE of
     :return: The gradient of the MSE for the training set classified with W
     """
-    grad = np.zeros((len(ts[0, 0]), 3))
+    grad = np.zeros((len(ts[0, 0]), len(ts)))
 
     for t, targetc in enumerate(ts):
         targetv = np.array([0, 0, 0])
@@ -78,7 +78,7 @@ def train_classifier(ts: np.ndarray, iterations: int = 1000, alpha: float = 0.00
     :param progress: A bool indicating if the status of the training should be printed
     :return: The weighted matrix W used in the linear classifier
     """
-    w = np.zeros((3, len(ts[0, 0])))
+    w = np.zeros((len(ts), len(ts[0, 0])))
 
     for n in range(iterations):
         w -= alpha * mse_gradient(w, ts).T
@@ -100,7 +100,7 @@ def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> 
     :param visualize: A bool indicating if the results should be printed nicely
     :return: The confusion matrix from the verification
     """
-    confusion_matrix = np.zeros((3, 3))
+    confusion_matrix = np.zeros((len(vs), len(vs)))
 
     for t, target_class in enumerate(vs):
         for instance in target_class:
@@ -108,7 +108,10 @@ def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> 
             confusion_matrix[t, prediction] += 1
 
     if visualize:
-        error_rate = 1 - (confusion_matrix[0, 0] + confusion_matrix[1, 1] + confusion_matrix[2, 2])/np.sum(confusion_matrix)
+        diagonal_sum = 0
+        for i in range(len(confusion_matrix)):
+            diagonal_sum += confusion_matrix[i, i]
+        error_rate = 1 - diagonal_sum/np.sum(confusion_matrix)
 
         print("Testing of the following weighted classifier matrix:")
         for x in range(len(w)):
@@ -116,8 +119,10 @@ def verify_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = True) -> 
                 print(f"\t{w[x, y]:.2f}", end="")
             print()
         print("\nResulting in the following confusion matrix:")
-        for x in range(3):
-            for y in range(3):
+        print("Classified as:\t\t1\t\t2\t\t3")
+        for x in range(len(confusion_matrix)):
+            print(f"From class {x + 1}", end="")
+            for y in range(len(confusion_matrix)):
                 print(f"\t\t{int(confusion_matrix[x, y])}", end="")
             print()
         print(f"\nThis resulted in an error rate of {100 * error_rate:.1f}%.")
