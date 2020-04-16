@@ -5,6 +5,7 @@ Started 13.4.2020.
 """
 
 import numpy as np
+from source.general_utilities import *
 
 
 def load_iris(trainingslice=np.s_[:, :30], verificationslice=np.s_[:, 30:], path="datasett/Iris_TTT4275/iris.data") -> (np.ndarray, np.ndarray):
@@ -108,24 +109,12 @@ def verify_linear_classifier(w: np.ndarray, vs: np.ndarray, visualize: bool = Tr
             confusion_matrix[t, prediction] += 1
 
     if visualize:
-        diagonal_sum = 0
-        for i in range(len(confusion_matrix)):
-            diagonal_sum += confusion_matrix[i, i]
-        error_rate = 1 - diagonal_sum/np.sum(confusion_matrix)
-
         print("Testing of the following weighted classifier matrix:")
         for x in range(len(w)):
             for y in range(len(w[0])):
                 print(f"\t{w[x, y]:.2f}", end="")
             print()
-        print("\nResulting in the following confusion matrix:")
-        print("Classified as:\t\t1\t\t2\t\t3")
-        for x in range(len(confusion_matrix)):
-            print(f"From class {x + 1}", end="")
-            for y in range(len(confusion_matrix)):
-                print(f"\t\t{int(confusion_matrix[x, y])}", end="")
-            print()
-        print(f"\nThis resulted in an error rate of {100 * error_rate:.1f}%.")
+        visualize_confusion_matrix(confusion_matrix, [1, 2, 3])
 
     return confusion_matrix
 
