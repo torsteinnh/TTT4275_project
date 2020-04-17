@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from scipy.stats import multivariate_normal
 from source.general_utilities import *
+from sklearn.mixture import GaussianMixture as Gmm
 
 
 class Dataset:
@@ -147,12 +148,26 @@ class Dataset:
         return confusion_matrix
 
 
+class MultiGaussianInterface(Gmm):
+    def pdf(self, test_vectors: np.ndarray) -> np.ndarray:
+        """
+        Adds the pdf method to the Gmm class as needed by the Dataset class
+        :param test_vectors: The vectors to find the probability of
+        :return: The probability vector of the given test vectors
+        """
+        probability = np.zeros((len(test_vectors)), float)
+        for i in range(len(self.weights_)):
+            curve = multivariate_normal(mean=self.means_[i], cov=self.covariances_[i], allow_singular=True)
+            probability += self.weights_[i] * curve.pdf(test_vectors)
+        return probability
+
+
 def single_gaussian_model(trainingset: Dataset, diagonal: bool = False) -> dict:
     """
-    Creates a list of gaussian models for the vowels in the training set
+    Creates a dictionary of gaussian models for the vowels in the training set
     :param trainingset: The training set used to make the models
     :param diagonal: A bool indicating if only the diagonal of the covariance matrix should be used
-    :return: A list of the models in the same order as the vowels appear in the dataset
+    :return: A dictionary of the models labeled after the vowels
     """
     models = dict()
 
@@ -161,5 +176,23 @@ def single_gaussian_model(trainingset: Dataset, diagonal: bool = False) -> dict:
         vowel_mean, vowel_covariance = training_slice.mean_covariance(diagonal)
         vowel_model = multivariate_normal(mean=vowel_mean, cov=vowel_covariance)
         models[vowel] = vowel_model
+
+    return models
+
+
+def multiple_gaussian_model(trainingset: Dataset, gaussians: int) -> dict:
+    """
+    Greates a dictionary of multiple gaussian models for the vowels in the training set
+    :param trainingset: The training set used to make the models
+    :param gaussians: The number of gaussians to be used in the fitting
+    :return: A dictionary of the models labeled after the vowels
+    """
+    models = dict()
+
+    for vowel in Dataset.vowels:
+        training_slice, _ = trainingset.split_at_index(None, [vowel])
+        gmm = MultiGaussianInterface(n_components=gaussians, covariance_type='diag', random_state=42)
+        gmm.fit(training_slice.internal_data)
+        models[vowel] = gmm
 
     return models

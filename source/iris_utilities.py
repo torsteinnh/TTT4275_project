@@ -4,7 +4,6 @@ A python script containing utilities used for the iris task.
 Started 13.4.2020.
 """
 
-import numpy as np
 from source.general_utilities import *
 
 
